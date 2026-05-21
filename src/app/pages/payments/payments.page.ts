@@ -19,14 +19,13 @@ import { QfBadgeComponent } from '../../shared/atoms/qf-badge/qf-badge.component
         <qf-button (clicked)="pagar()">Registrar pago</qf-button>
       </qf-card>
       <qf-card tone="flat">
-        <table><thead><tr><th>ID</th><th>Fecha</th><th>Monto</th><th>Método</th><th>Estado</th></tr></thead><tbody>@for (p of pagos(); track p.id) { <tr><td>{{ p.id }}</td><td>{{ p.fechaPago }}</td><td>{{ money(p.monto) }}</td><td>{{ p.metodoPago }}</td><td><qf-badge [tone]="p.estadoPago === 'EXITOSO' ? 'success' : 'warning'">{{ p.estadoPago }}</qf-badge></td></tr> }</tbody></table>
+        <div class="qf-table-wrap"><table class="qf-table"><thead><tr><th>ID</th><th>Fecha</th><th>Monto</th><th>Método</th><th>Estado</th></tr></thead><tbody>@for (p of pagos(); track p.id) { <tr><td>{{ p.id }}</td><td>{{ p.fechaPago }}</td><td>{{ money(p.monto) }}</td><td>{{ p.metodoPago }}</td><td><qf-badge [tone]="p.estadoPago === 'EXITOSO' ? 'success' : 'warning'">{{ p.estadoPago }}</qf-badge></td></tr> }</tbody></table></div>
       </qf-card>
     </section>
   `,
   styles: [`
-    h2 { margin: 0; font-size: 2rem; letter-spacing: -.04em; }
-    select, input { width: 100%; border: 1px solid var(--qf-line); border-radius: 16px; padding: 13px 14px; color: var(--qf-text); background: #11111a; outline: none; margin: 14px 0; }
-    table { width: 100%; border-collapse: collapse; } th, td { padding: 13px 10px; border-bottom: 1px solid var(--qf-line); text-align: left; } th { color: var(--qf-muted); }
+    h2 { margin: 0; font-size: 2rem; }
+    select, input { width: 100%; border: 1px solid var(--qf-line); border-radius: 8px; padding: 13px 14px; color: var(--qf-text); background: var(--qf-black-3); outline: none; margin: 14px 0; }
   `]
 })
 export class PaymentsPage implements OnInit {
@@ -36,3 +35,4 @@ export class PaymentsPage implements OnInit {
   cargar(): void { this.data.pagos({ page: 0, size: 20, sort: 'id,desc' }).subscribe(p => this.pagos.set(p.content)); }
   pagar(): void { this.data.registrarPago({ metodoPago: this.metodo, referencia: this.referencia }).subscribe({ next: () => { this.toast.show('Pago registrado', 'success'); this.referencia = `PAGO-FRONT-${Date.now()}`; this.cargar(); }, error: () => this.toast.show('No se pudo registrar el pago', 'error') }); }
 }
+

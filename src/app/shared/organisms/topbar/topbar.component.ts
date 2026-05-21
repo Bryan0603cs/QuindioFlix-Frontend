@@ -23,7 +23,7 @@ import { QfButtonComponent } from '../../atoms/qf-button/qf-button.component';
   styles: [`
     .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-bottom: 20px; }
     p { margin: 0; color: var(--qf-muted); font-weight: 800; text-transform: uppercase; letter-spacing: .1em; font-size: .76rem; }
-    h1 { margin: 4px 0 0; font-size: clamp(1.6rem, 3vw, 2.5rem); letter-spacing: -.05em; }
+    h1 { margin: 4px 0 0; font-size: clamp(1.6rem, 3vw, 2.5rem); }
     .user { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
     @media (max-width: 720px) { .topbar { align-items: flex-start; flex-direction: column; } }
   `]

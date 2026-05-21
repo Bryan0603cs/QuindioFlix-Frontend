@@ -1,10 +1,10 @@
 import { Contenido } from '../models/api.models';
 
 const gradients = [
-  'linear-gradient(135deg, #00038C 0%, #0a0a0f 45%, #111827 100%)',
-  'linear-gradient(135deg, #0f172a 0%, #00038C 55%, #000 100%)',
-  'linear-gradient(135deg, #020617 0%, #1e1b4b 40%, #00038C 100%)',
-  'linear-gradient(135deg, #111827 0%, #020617 50%, #1017d9 100%)'
+  'linear-gradient(135deg, #0d1020 0%, #1a2a5a 52%, #2a1a5a 100%)',
+  'linear-gradient(135deg, #07101f 0%, #1a3040 48%, #4a1a80 100%)',
+  'linear-gradient(135deg, #0b0d1a 0%, #1a2040 48%, #4a6fd4 100%)',
+  'linear-gradient(135deg, #07080f 0%, #1a2f5a 48%, #9b6fd4 100%)'
 ];
 
 export function posterStyle(content?: Partial<Contenido> | null): string {

@@ -1,20 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
 :root {
-  --qf-black: #050505;
-  --qf-black-2: #0a0a0f;
-  --qf-black-3: #11111a;
-  --qf-surface: rgba(17, 17, 26, 0.82);
-  --qf-surface-2: rgba(27, 27, 40, 0.88);
-  --qf-line: rgba(255,255,255,0.10);
-  --qf-blue: #00038C;
-  --qf-blue-2: #1017d9;
-  --qf-blue-soft: rgba(0, 3, 140, 0.28);
-  --qf-text: #f8fafc;
-  --qf-muted: #a1a1aa;
-  --qf-danger: #ef4444;
-  --qf-warning: #f59e0b;
-  --qf-success: #22c55e;
-  --qf-radius: 22px;
-  --qf-shadow: 0 24px 90px rgba(0,0,0,.45);
+  --qf-black: #07080f;
+  --qf-black-2: #070810;
+  --qf-black-3: #0b0d1a;
+  --qf-surface: rgba(11, 13, 26, 0.94);
+  --qf-surface-2: rgba(13, 16, 32, 0.95);
+  --qf-line: #1a2040;
+  --qf-line-soft: #0f1428;
+  --qf-blue: #4a6fd4;
+  --qf-blue-2: #3a5fd4;
+  --qf-violet: #9b6fd4;
+  --qf-cyan: #00d4ff;
+  --qf-highlight: #a0b8ff;
+  --qf-blue-soft: rgba(74, 111, 212, 0.12);
+  --qf-text: #e2e8ff;
+  --qf-muted: #5a6a9a;
+  --qf-muted-2: #3d4a7a;
+  --qf-danger: #ff4a8d;
+  --qf-warning: #d47aff;
+  --qf-success: #00ff9f;
+  --qf-radius: 8px;
+  --qf-shadow: 0 18px 55px rgba(0,0,0,.45);
+  --qf-gradient: linear-gradient(135deg, var(--qf-blue), var(--qf-violet));
+  --qf-gradient-cyan: linear-gradient(90deg, var(--qf-blue), var(--qf-violet), var(--qf-cyan));
 }
 
 * { box-sizing: border-box; }
@@ -22,11 +31,10 @@ html, body { height: 100%; }
 body {
   margin: 0;
   color: var(--qf-text);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background:
-    radial-gradient(circle at 10% 0%, rgba(0, 3, 140, .45), transparent 34%),
-    radial-gradient(circle at 90% 20%, rgba(16, 23, 217, .18), transparent 26%),
-    linear-gradient(135deg, #030307 0%, #090912 55%, #000 100%);
+    linear-gradient(180deg, rgba(74, 111, 212, .11) 0%, transparent 34%),
+    linear-gradient(135deg, #07080f 0%, #0b1024 48%, #050610 100%);
   background-attachment: fixed;
 }
 
@@ -42,6 +50,35 @@ button { cursor: pointer; }
 .qf-page {
   display: grid;
   gap: 22px;
+}
+
+.qf-page-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.qf-page-header h2 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1;
+}
+
+.qf-kicker {
+  font-family: "Space Mono", monospace;
+  margin: 0 0 8px;
+  color: var(--qf-muted-2);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+
+.qf-kicker::before {
+  content: '// ';
+  color: var(--qf-blue);
 }
 
 .qf-grid {
@@ -72,7 +109,32 @@ button { cursor: pointer; }
 }
 
 .qf-muted { color: var(--qf-muted); }
-.qf-error { color: #fecaca; background: rgba(239,68,68,.14); border: 1px solid rgba(239,68,68,.35); padding: 12px 14px; border-radius: 16px; }
-.qf-success { color: #bbf7d0; background: rgba(34,197,94,.12); border: 1px solid rgba(34,197,94,.32); padding: 12px 14px; border-radius: 16px; }
+.qf-error { color: #ff9ec8; background: rgba(255,74,141,.08); border: 1px solid rgba(255,74,141,.32); padding: 12px 14px; border-radius: 6px; }
+.qf-success { color: var(--qf-success); background: rgba(0,255,159,.07); border: 1px solid rgba(0,255,159,.28); padding: 12px 14px; border-radius: 6px; }
 .qf-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-.qf-section-title { margin: 0 0 12px; font-size: 1.08rem; letter-spacing: -.01em; }
+.qf-section-title { margin: 0 0 12px; font-size: 1.08rem; }
+
+.qf-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.qf-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+}
+
+.qf-table th,
+.qf-table td {
+  padding: 13px 12px;
+  border-bottom: 1px solid var(--qf-line);
+  text-align: left;
+}
+
+.qf-table th {
+  color: var(--qf-muted);
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}

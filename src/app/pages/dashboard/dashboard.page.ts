@@ -18,9 +18,14 @@ import { ContentCardComponent } from '../../shared/molecules/content-card/conten
       <qf-card tone="blue">
         <div class="hero">
           <div>
-            <p class="eyebrow">Oracle conectado</p>
-            <h2>Catálogo, pagos, perfiles y analítica desde QuindioFlix.</h2>
-            <p class="qf-muted">Tu cuenta está en plan {{ auth.currentUser()?.plan }} y vence el {{ auth.currentUser()?.fechaVencimiento || 'sin fecha' }}.</p>
+            <p class="qf-kicker">Oracle conectado</p>
+            <h2>Todo QuindioFlix en una sola consola.</h2>
+            <p class="qf-muted">Catálogo, perfiles, pagos, reportes y analítica listos para demostrar el modelo de negocio.</p>
+            <div class="account-strip">
+              <span>Plan {{ auth.currentUser()?.plan || '-' }}</span>
+              <span>Vence {{ auth.currentUser()?.fechaVencimiento || 'sin fecha' }}</span>
+              <span>Estado {{ auth.currentUser()?.estadoCuenta || '-' }}</span>
+            </div>
           </div>
           <qf-button routerLink="/catalogo">Explorar catálogo</qf-button>
         </div>
@@ -43,8 +48,9 @@ import { ContentCardComponent } from '../../shared/molecules/content-card/conten
   `,
   styles: [`
     .hero { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-    .eyebrow { margin: 0; color: #c7d2fe; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; font-size: .78rem; }
-    h2 { margin: 6px 0 12px; font-size: clamp(2rem, 4vw, 4rem); line-height: 1; letter-spacing: -.07em; max-width: 850px; }
+    h2 { margin: 6px 0 12px; font-size: clamp(2rem, 4vw, 4rem); line-height: 1; max-width: 850px; }
+    .account-strip { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    .account-strip span { border: 1px solid var(--qf-line); border-radius: 8px; padding: 9px 12px; background: rgba(0,0,0,.24); color: var(--qf-text); font-weight: 800; }
     @media (max-width: 760px) { .hero { flex-direction: column; align-items: flex-start; } }
   `]
 })

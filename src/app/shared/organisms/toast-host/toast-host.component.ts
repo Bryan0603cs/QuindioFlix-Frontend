@@ -15,7 +15,7 @@ import { ToastService } from '../../../core/services/toast.service';
   `,
   styles: [`
     .toast-wrap { position: fixed; right: 18px; bottom: 18px; z-index: 1000; display: grid; gap: 10px; }
-    .toast { max-width: 360px; padding: 14px 16px; border-radius: 16px; color: var(--qf-text); background: rgba(17,17,26,.92); border: 1px solid var(--qf-line); box-shadow: var(--qf-shadow); }
+    .toast { max-width: 360px; padding: 14px 16px; border-radius: 8px; color: var(--qf-text); background: rgba(17,17,26,.92); border: 1px solid var(--qf-line); box-shadow: var(--qf-shadow); }
     .toast.success { border-color: rgba(34,197,94,.4); }
     .toast.error { border-color: rgba(239,68,68,.4); }
   `]
