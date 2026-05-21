@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { AuthResponse, MetodoPago, RolUsuario, Usuario } from '../models/api.models';
+import { AuthResponse, MetodoPago, Perfil, RolUsuario, Usuario } from '../models/api.models';
 
 export interface LoginPayload { email: string; password: string; }
 export interface RegisterPayload {
@@ -22,10 +22,13 @@ export interface RegisterPayload {
 export class AuthService {
   private readonly tokenKey = 'qf_token';
   private readonly userKey = 'qf_user';
+  private readonly profileKey = 'qf_active_profile';
   private readonly api = environment.apiUrl;
 
   private userSignal = signal<Usuario | null>(this.loadUser());
+  private profileSignal = signal<Perfil | null>(this.loadProfile());
   currentUser = this.userSignal.asReadonly();
+  activeProfile = this.profileSignal.asReadonly();
   isAuthenticated = computed(() => !!this.token && !!this.userSignal());
   role = computed<RolUsuario | null>(() => this.userSignal()?.rol ?? null);
 
@@ -46,7 +49,9 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
+    localStorage.removeItem(this.profileKey);
     this.userSignal.set(null);
+    this.profileSignal.set(null);
     this.router.navigateByUrl('/login');
   }
 
@@ -60,15 +65,35 @@ export class AuthService {
     localStorage.setItem(this.userKey, JSON.stringify(user));
   }
 
+  getPerfilActivo(): Perfil | null {
+    return this.profileSignal();
+  }
+
+  setPerfilActivo(perfil: Perfil | null): void {
+    this.profileSignal.set(perfil);
+    if (perfil) {
+      localStorage.setItem(this.profileKey, JSON.stringify(perfil));
+    } else {
+      localStorage.removeItem(this.profileKey);
+    }
+  }
+
   private persist(res: AuthResponse): void {
     localStorage.setItem(this.tokenKey, res.token);
     localStorage.setItem(this.userKey, JSON.stringify(res.usuario));
     this.userSignal.set(res.usuario);
+    this.setPerfilActivo(null);
   }
 
   private loadUser(): Usuario | null {
     const raw = localStorage.getItem(this.userKey);
     if (!raw) return null;
     try { return JSON.parse(raw) as Usuario; } catch { return null; }
+  }
+
+  private loadProfile(): Perfil | null {
+    const raw = localStorage.getItem(this.profileKey);
+    if (!raw) return null;
+    try { return JSON.parse(raw) as Perfil; } catch { return null; }
   }
 }

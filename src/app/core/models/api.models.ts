@@ -152,6 +152,17 @@ export interface Calificacion {
   estrellas: number;
   resena?: string | null;
   fechaCalificacion: string;
+  perfil?: string;
+  nombrePerfil?: string;
+}
+
+export interface ContenidoRelacionado {
+  id: number;
+  contenidoOrigenId: number;
+  contenidoDestinoId: number;
+  tituloDestino: string;
+  tipoRelacion: string;
+  descripcion?: string | null;
 }
 
 export interface CrearContenidoPayload {
@@ -164,6 +175,11 @@ export interface CrearContenidoPayload {
   originalQuindioflix: boolean;
   empleadoResponsableId: number;
   generoIds: number[];
+}
+
+export interface CambiarPlanPayload {
+  nuevoPlanId: number;
+  motivo?: string;
 }
 
 export interface IngresoPlan { plan: string; total: number; pagos: number; }

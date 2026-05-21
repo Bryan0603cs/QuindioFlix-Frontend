@@ -1,30 +1,128 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 import { DataService } from '../../core/services/data.service';
-import { CalificacionCategoria, IngresoPlan, TopContenido } from '../../core/models/api.models';
-import { formatMoney } from '../../core/utils/poster.util';
 import { ToastService } from '../../core/services/toast.service';
 import { QfCardComponent } from '../../shared/atoms/qf-card/qf-card.component';
 import { QfButtonComponent } from '../../shared/atoms/qf-button/qf-button.component';
 
 @Component({
+  selector: 'app-analytics',
   standalone: true,
   imports: [FormsModule, QfCardComponent, QfButtonComponent],
   template: `
     <section class="qf-page">
-      <qf-card><h2>Analítica</h2><p class="qf-muted">Reportes gerenciales de consumo, ingresos y calificación.</p><div class="filters"><input [(ngModel)]="ciudad" placeholder="Ciudad"/><input [(ngModel)]="genero" placeholder="Género"/><input [(ngModel)]="mes" type="number"/><input [(ngModel)]="anio" type="number"/><qf-button (clicked)="cargar()">Actualizar</qf-button></div></qf-card>
-      <div class="qf-grid qf-grid-3"><qf-card tone="flat"><h3>Top por ciudad</h3>@for(t of top(); track t.contenidoId){<div class="bar"><span>{{ t.titulo }}</span><strong>{{ t.reproducciones }}</strong></div>}</qf-card><qf-card tone="flat"><h3>Ingresos por plan</h3>@for(i of ingresos(); track i.plan){<div class="bar"><span>{{ i.plan }}</span><strong>{{ money(i.total) }}</strong></div>}</qf-card><qf-card tone="flat"><h3>Calificación por género</h3>@for(c of calificaciones(); track c.categoria){<div class="bar"><span>{{ c.categoria }}</span><strong>{{ c.promedio }}</strong></div>}</qf-card></div>
-      <div class="qf-actions"><qf-button variant="ghost" (clicked)="popularidad()">Actualizar popularidad</qf-button><qf-button variant="ghost" (clicked)="vencidas()">Desactivar vencidas</qf-button></div>
+      <header class="page-header">
+        <h1>Dashboard de Analítica QuindioFlix</h1>
+        <div class="filters-panel">
+          <select [(ngModel)]="ciudad">
+            <option value="">Todas las ciudades</option>
+            @for(c of ciudades; track c){ <option [value]="c">{{c}}</option> }
+          </select>
+          <select [(ngModel)]="genero">
+            <option value="">Todos los géneros</option>
+            @for(g of generos; track g){ <option [value]="g">{{g}}</option> }
+          </select>
+          <input type="number" [(ngModel)]="mes" min="1" max="12" placeholder="Mes"/>
+          <input type="number" [(ngModel)]="anio" min="2020" max="2026" placeholder="Año"/>
+
+          <div class="actions">
+            <qf-button (clicked)="cargar()">Generar Reporte</qf-button>
+            <qf-button (clicked)="resetear()" style="background: #444;">Reporte General</qf-button>
+          </div>
+        </div>
+      </header>
+
+      <div class="bento-grid">
+        <qf-card class="card-large">
+          <h3>Ingresos por Suscripción (Análisis de datos)</h3>
+          @for(i of ingresos(); track i.plan) {
+            <div class="stat-row">
+              <span>{{i.plan}}</span>
+              <div class="progress-bg"><div class="progress-bar" [style.width.%]="(i.total/maxIngreso)*100"></div></div>
+              <strong>$ {{i.total.toLocaleString()}}</strong>
+            </div>
+          }
+        </qf-card>
+
+        <qf-card class="card-small">
+          <h3>Promedio por Género</h3>
+          <div class="kpi-container">
+            @for(c of calificaciones(); track c.categoria) {
+              <div class="kpi-card">
+                <span class="kpi-value">{{c.promedio.toFixed(1)}}</span>
+                <span class="kpi-label">{{c.categoria}}</span>
+              </div>
+            }
+          </div>
+        </qf-card>
+
+        <qf-card class="card-full">
+          <h3>Top Contenido (Resultados de consulta avanzada)</h3>
+          <table class="modern-table">
+            <thead><tr><th>Título</th><th>Reproducciones</th></tr></thead>
+            <tbody>
+              @for(t of top(); track t.contenidoId) {
+                <tr><td>{{t.titulo}}</td><td>{{t.reproducciones}}</td></tr>
+              }
+            </tbody>
+          </table>
+        </qf-card>
+      </div>
     </section>
   `,
-  styles: [`h2{margin:0;font-size:2rem;letter-spacing:-.04em}.filters{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:18px}input{width:100%;border:1px solid var(--qf-line);border-radius:16px;padding:13px 14px;color:var(--qf-text);background:#11111a;outline:none}.bar{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--qf-line);color:var(--qf-muted)}.bar strong{color:var(--qf-text)}@media(max-width:900px){.filters{grid-template-columns:1fr}}`]
+  styles: [`
+    .filters-panel { display: flex; gap: 10px; background: #1a1a1a; padding: 20px; border-radius: 12px; align-items: center; flex-wrap: wrap; }
+    .actions { display: flex; gap: 8px; margin-left: auto; }
+    .bento-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 20px; }
+    .card-full { grid-column: span 2; }
+    .stat-row { display: grid; grid-template-columns: 100px 1fr 120px; gap: 15px; align-items: center; margin: 15px 0; }
+    .progress-bg { height: 10px; background: #333; border-radius: 5px; overflow: hidden; }
+    .progress-bar { height: 100%; background: var(--qf-blue); transition: width 0.5s; }
+    .kpi-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+    .kpi-card { background: #222; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #333; }
+    .kpi-value { display: block; font-size: 1.5rem; font-weight: bold; color: var(--qf-blue); }
+    .kpi-label { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+    .modern-table { width: 100%; border-collapse: collapse; }
+    .modern-table td { padding: 15px; border-bottom: 1px solid #333; }
+    select, input { padding: 10px; background: #222; color: white; border: 1px solid #444; border-radius: 4px; }
+  `]
 })
 export class AnalyticsPage implements OnInit {
-  ciudad='Armenia'; genero='Acción'; mes=new Date().getMonth()+1; anio=new Date().getFullYear();
-  top=signal<TopContenido[]>([]); ingresos=signal<IngresoPlan[]>([]); calificaciones=signal<CalificacionCategoria[]>([]); money=formatMoney;
+  ciudades = ['Armenia', 'Calarcá', 'Circasia', 'Montenegro', 'Quimbaya'];
+  generos = ['Acción', 'Comedia', 'Drama', 'Suspenso', 'Romance', 'Ciencia Ficción', 'Terror', 'Documental', 'Infantil'];
+
+  ciudad = ''; genero = ''; mes = 5; anio = 2026;
+
+  top = signal<any[]>([]);
+  ingresos = signal<any[]>([]);
+  calificaciones = signal<any[]>([]);
+  maxIngreso = 1;
+
   constructor(private data: DataService, private toast: ToastService) {}
+
   ngOnInit(): void { this.cargar(); }
-  cargar(): void { this.data.topContenidoCiudad(this.ciudad,10).subscribe(v=>this.top.set(v)); this.data.ingresosPlan(this.mes,this.anio).subscribe({next:v=>this.ingresos.set(v), error:()=>this.ingresos.set([])}); this.data.calificacionGenero(this.genero).subscribe(v=>this.calificaciones.set(v)); }
-  popularidad(): void { this.data.actualizarPopularidad().subscribe({next:()=>this.toast.show('Popularidad actualizada','success'), error:()=>this.toast.show('No fue posible actualizar','error')}); }
-  vencidas(): void { this.data.desactivarVencidas().subscribe({next:()=>this.toast.show('Cuentas vencidas procesadas','success'), error:()=>this.toast.show('No fue posible procesar cuentas','error')}); }
+
+  cargar(): void {
+    // Si los filtros son vacíos, el backend debería entender que es un Reporte General
+    forkJoin({
+      top: this.data.topContenidoCiudad(this.ciudad || 'TODOS'),
+      ingresos: this.data.ingresosPlan(this.mes, this.anio),
+      calificaciones: this.data.calificacionGenero(this.genero || 'TODOS')
+    }).subscribe({
+      next: (res) => {
+        this.top.set(res.top);
+        this.ingresos.set(res.ingresos);
+        this.calificaciones.set(res.calificaciones);
+        this.maxIngreso = res.ingresos.length > 0 ? Math.max(...res.ingresos.map(i => i.total)) : 1;
+      },
+      error: () => this.toast.show('Error al procesar consulta avanzada', 'error')
+    });
+  }
+
+  resetear(): void {
+    this.ciudad = ''; this.genero = ''; this.mes = 5; this.anio = 2026;
+    this.cargar();
+    this.toast.show('Reporte general aplicado', 'info');
+  }
 }

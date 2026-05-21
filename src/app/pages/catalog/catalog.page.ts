@@ -13,8 +13,8 @@ import { EmptyStateComponent } from '../../shared/molecules/empty-state/empty-st
   template: `
     <section class="qf-page">
       <qf-card>
-        <div class="header">
-          <div><h2>Catálogo</h2><p class="qf-muted">Explora películas, series, documentales, música y podcasts.</p></div>
+        <div class="qf-page-header">
+          <div><p class="qf-kicker">Catálogo multimedia</p><h2>Explora QuindioFlix</h2><p class="qf-muted">Películas, series, documentales, música y podcasts filtrados desde Oracle.</p></div>
           <qf-button variant="ghost" (clicked)="limpiar()">Limpiar filtros</qf-button>
         </div>
         <div class="filters">
@@ -39,10 +39,10 @@ import { EmptyStateComponent } from '../../shared/molecules/empty-state/empty-st
     </section>
   `,
   styles: [`
-    h2 { margin: 0; font-size: 2.1rem; letter-spacing: -.05em; }
-    .header, .pager { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .pager { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
     .filters { display: grid; grid-template-columns: 1.4fr 1fr 1fr auto; gap: 12px; margin-top: 18px; }
-    input, select { width: 100%; border: 1px solid var(--qf-line); border-radius: 16px; padding: 13px 14px; color: var(--qf-text); background: #11111a; outline: none; }
+    input, select { width: 100%; border: 1px solid var(--qf-line); border-radius: 8px; padding: 13px 14px; color: var(--qf-text); background: var(--qf-black-3); outline: none; }
+    input:focus, select:focus { border-color: rgba(245,196,81,.75); box-shadow: 0 0 0 4px rgba(245,196,81,.12); }
     .pager { justify-content: center; color: var(--qf-muted); font-weight: 800; }
     @media (max-width: 900px) { .filters { grid-template-columns: 1fr; } }
   `]
@@ -71,3 +71,4 @@ export class CatalogPage implements OnInit {
   anterior(): void { this.page.update(v => Math.max(0, v - 1)); this.cargar(); }
   siguiente(): void { this.page.update(v => v + 1); this.cargar(); }
 }
+
